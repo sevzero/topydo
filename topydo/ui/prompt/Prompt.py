@@ -20,7 +20,7 @@ import shlex
 import sys
 
 from prompt_toolkit.history import InMemoryHistory
-from prompt_toolkit.shortcuts import prompt
+from prompt_toolkit import prompt, PromptSession
 
 from topydo.Commands import get_subcommand
 from topydo.lib.Config import ConfigError, config
@@ -66,12 +66,13 @@ class PromptApplication(CLIApplicationBase):
         """ Main entry function. """
         history = InMemoryHistory()
         self._load_file()
+        session = PromptSession(history=history)
 
         while True:
             # (re)load the todo.txt file (only if it has been modified)
 
             try:
-                user_input = prompt(u'topydo> ', history=history,
+                user_input = session.prompt(u'topydo> ',
                                     completer=self.completer,
                                     complete_while_typing=False)
                 user_input = shlex.split(user_input)
